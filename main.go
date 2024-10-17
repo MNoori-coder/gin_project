@@ -1,49 +1,27 @@
 package main
 
 import (
-	"net/http"
+	"fmt"
+	"log"
+	"os"
 
 	"example.com/rest-api/db"
-	"example.com/rest-api/models"
+	"example.com/rest-api/routes"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
+
 	db.InitDB()
 	server := gin.Default()
+	routes.RegisterRoutes(server)
 
-	server.GET("/events", getEvents)
-	server.POST("/events", createEvent)
-
-	server.Run(":8080")
-}
-
-func getEvents(context *gin.Context) {
-	events, err := models.GetAllEvents()
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Couldn't fetch events!"})
-		return
-	}
-	context.JSON(http.StatusOK, events)
-}
-
-func createEvent(context *gin.Context) {
-	var event models.Event
-	err := context.ShouldBindJSON(&event)
-
-	if err != nil {
-		context.JSON(http.StatusBadRequest, gin.H{"message": "Couldn't parse the request!"})
-		return
-	}
-
-	event.ID = 1
-	event.UserID = 1
-
-	err = event.Save()
-
-	if err != nil {
-		context.JSON(http.StatusInternalServerError, gin.H{"message": "Couldn't create event!"})
-		return
-	}
-	context.JSON(http.StatusCreated, gin.H{"message": "Event created!", "event": event})
+	port := os.Getenv("PORT")
+	addr := fmt.Sprintf(":%s", port)
+	server.Run(addr)
 }
