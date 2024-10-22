@@ -1,9 +1,10 @@
-PUT http://localhost:8080/events/1
+PUT http://localhost:8080/events/3
 Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE3Mjk1OTkyNDcsInVzZXJJZCI6Mn0.m1Y2FfUBym-MMKaMaeDUu9sBq4d5LGq32-6s8I1WDSg
 
 {
     "name": "Updated test",
     "description": "Updated des",
-    "location": "New York",
+    "location": "Tehran",
     "dateTime": "2024-02-11T12:35:00Z"
 }
